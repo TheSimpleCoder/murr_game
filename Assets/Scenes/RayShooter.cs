@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class RayShooter : MonoBehaviour
 {
+
     private Camera _camera;
+
     void Start()
     {
-        // доступ к другим компонентам, присоединенным к этому объекту
-        _camera = GetComponent();
+        // доступ к конкретному компоненту
+        _camera = GetComponent<Camera>();
     }
 
     void Update()
@@ -21,9 +23,21 @@ public class RayShooter : MonoBehaviour
             Ray ray = _camera.ScreenPointToRay(point);
             // создаем структуру данных, которая содержит в себе информацию о точке выходи и объекте столкновения луча
             RaycastHit hit;
+
             if (Physics.Raycast(ray, out hit)) {
-                Debug.Log("Hit " + hit.point);
+                StartCoroutine(SphereIndicator(hit.point));
             }
         }
+    }
+
+    private IEnumerator SphereIndicator(Vector3 pos)
+    {
+        GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        sphere.transform.position = pos;
+
+        yield return new WaitForSeconds(1);
+
+        Destroy(sphere);
+
     }
 }
